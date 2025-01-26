@@ -1,0 +1,23 @@
+:root {
+	--black-color : rgb(18,18,18);
+	--black-white : rgb(255,255,255)
+
+}
+
+* {
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+}
+
+#root {
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+body {
+	font-family: "Open Sans", sans-serif;
+	color: var(--black-color);
+	
+	padding: 35px;
+}
