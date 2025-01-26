@@ -1,5 +1,6 @@
 import { AbstractPage } from "../../common/classes/page";
 import onChange from 'on-change';
+import { Header } from "../../components/header/header";
 
 export class MainPage extends AbstractPage {
 	constructor(appState) {
@@ -17,18 +18,22 @@ export class MainPage extends AbstractPage {
 	};
 
 	appStateHook (path) {
+		console.log(path);
 		if (path === "favorites") {
 			this.render()
-		}
+	 }
 	}
 
 	render() {
 		const main = document.createElement("div");
-		main.innerHTML = `
-		Главная старница
-		Количество избранных книг ${this.appState.favorites.length}`;
+		main.innerHTML = `Главная старница`;
 		this.app.innerHTML = "";
 		this.app.append(main);
-		// this.appState.favorites.push("book")
+		this.renderHeader()
+	}
+	renderHeader() {
+		const header = new Header(this.appState).render()
+		this.app.prepend(header)
+		
 	}
 }

@@ -1107,6 +1107,46 @@
 	onChange.target = proxy => proxy?.[TARGET] ?? proxy;
 	onChange.unsubscribe = proxy => proxy?.[UNSUBSCRIBE] ?? proxy;
 
+	class DivComponent {
+		constructor() {
+			this.element =  document.createElement('div');
+		}
+		render() {
+			this.element;
+		}
+	}
+
+	class Header extends DivComponent {
+		constructor (appState) {
+			super();
+			this.appState = appState;
+		}
+		render() {
+			this.element.innerHTML = "";
+			this.element.classList.add("header");
+			this.element.innerHTML = `
+		<a src="/">
+		<img src ="../../../static/logo.svg" alt = "Лого">
+		</a>
+		<div class = "menu">
+		<div class = menu__links>
+		<a class = "menu__link" href ="#search">
+		<img src ="../../../static/search.svg" alt = "поиск">
+		Поиск книг
+		</a>
+		<a class = "menu__link" href ="#favorites">
+		<img src ="../../../static/favorites.svg" alt = "избранное">
+		Избранное
+		</a>
+		</div>
+		<div class ="menu__counter">
+	  ${ this.appState.favorites.length }
+		</div>
+		`;
+			return this.element
+		}
+	}
+
 	class MainPage extends AbstractPage {
 		constructor(appState) {
 			super();
@@ -1123,19 +1163,23 @@
 		};
 
 		appStateHook (path) {
+			console.log(path);
 			if (path === "favorites") {
 				this.render();
-			}
+		 }
 		}
 
 		render() {
 			const main = document.createElement("div");
-			main.innerHTML = `
-		Главная старница
-		Количество избранных книг ${this.appState.favorites.length}`;
+			main.innerHTML = `Главная старница`;
 			this.app.innerHTML = "";
 			this.app.append(main);
-			// this.appState.favorites.push("book")
+			this.renderHeader();
+		}
+		renderHeader() {
+			const header = new Header(this.appState).render();
+			this.app.prepend(header);
+			
 		}
 	}
 
