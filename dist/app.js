@@ -1147,31 +1147,87 @@
 		}
 	}
 
+	class Search extends DivComponent {
+		constructor(state) {
+			super();
+			this.state = state;
+		}
+
+		onSearch() {
+			const value = this.element.querySelector("input").value;
+			this.state.searchValue = value;
+		}
+
+
+		render () {
+			this.element.innerHTML = "";
+			this.element.classList.add("search");
+			this.element.innerHTML = `
+		<div class = "search__wrapper">
+		<input 
+		class = "search__input"
+		type = "text" 
+		placeholder = "Найти книгу или автора...."
+		value = "${this.state.searchValue ?? ""}"
+		/>
+		<img src = "../../../static/search.svg" alt = "Иконка поикса"/>
+		</div>
+		<button 
+		type = "button" 
+		class = "search__button"
+		>
+		<img 
+		src = "../../../static/search-white.svg" 
+		alt = "Иконка поикса белая"
+		/>
+		</button>
+		`;
+			this.element.querySelector("button").addEventListener('click', this.onSearch.bind(this));
+			this.element.querySelector("button").addEventListener('keydown', (event) => {
+				if (event.code === "Enter") this.onSearch();
+			});
+			return this.element
+		}
+	}
+
 	class MainPage extends AbstractPage {
 		constructor(appState) {
 			super();
 			this.setTitle("Главная Страница");
 			this.appState = appState;
 			this.appState = onChange(this.appState, this.appStateHook.bind(this));
+			this.state = onChange(this.state, this.stateHook.bind(this));
 		}
 	 
 		state = {
 			bookList: [],
 			isLoading: false,
 			searchValue: "",
-			offSet: null,
+			offSet:null,
 		};
 
 		appStateHook (path) {
-			console.log(path);
 			if (path === "favorites") {
 				this.render();
 		 }
 		}
+		async stateHook (path) {
+			if (path === "searchValue") {
+				const data = await this.getBookList(this.state.searchValue, this.state.offSet);
+				this.state.bookList = data.docs;
+				console.log(data.docs);
+		 }
+		}
+
+		async getBookList (searchValue,offset) {
+			const getData = await fetch (`https://openlibrary.org/search.json?q=${searchValue}&offset=${offset}`);
+			return getData.json()
+		}
 
 		render() {
 			const main = document.createElement("div");
-			main.innerHTML = `Главная старница`;
+			const searchComponent = new Search(this.state).render();
+			main.append(searchComponent);
 			this.app.innerHTML = "";
 			this.app.append(main);
 			this.renderHeader();
@@ -1181,6 +1237,7 @@
 			this.app.prepend(header);
 			
 		}
+		 
 	}
 
 	class NotFoundPage extends AbstractPage {
