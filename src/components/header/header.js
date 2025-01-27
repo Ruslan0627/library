@@ -1,5 +1,5 @@
 import "../header/header.css";
-import { DivComponent } from "../../common/classes/div -component";
+import { DivComponent } from "../../common/classes/div-component";
 
 export class Header extends DivComponent {
 	constructor (appState) {
