@@ -1,0 +1,7 @@
+.card__grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 12px;
+	align-items: stretch;
+	align-items: start;
+}

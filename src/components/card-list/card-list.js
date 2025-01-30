@@ -15,10 +15,14 @@ export class CardList extends DivComponent {
 			this.element.innerHTML = `<h1>Загрузка...</h1>`;
 			return this.element;
 		}
-		 else {
-			this.element.innerHTML = `<h1>Найдено книг – ${this.parentState.numFound}</h1>`
+		else {
+			const cardGrid = document.createElement('div')
+			cardGrid.classList.add("card__grid")
+
+			this.element.append(cardGrid)
+
 			for (const book of this.parentState.bookList) {
-				this.element.append(new Card(this.appState, book).render())
+				cardGrid.append(new Card(this.appState, book).render())
 			}
 		}
 	

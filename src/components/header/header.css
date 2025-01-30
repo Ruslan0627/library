@@ -3,6 +3,11 @@
 	align-items: center;
 	justify-content: space-between;
 	margin-bottom: 41px;
+	position: sticky;
+  top: 0;
+  background: white;
+  padding: 10px;
+  z-index: 1000;
 }
 
 .menu {

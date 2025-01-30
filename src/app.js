@@ -1,3 +1,4 @@
+import { FavoritesPage } from "./pages/favorites/favorites.js";
 import { MainPage } from "./pages/main/main.js";
 import { NotFoundPage } from "./pages/not-found/not-found.js";
 
@@ -6,6 +7,10 @@ class App {
 		{
 			path: "",
 			page: MainPage,
+		},		
+		{
+			path: "#favorites",
+			page: FavoritesPage,
 		},
 	];
 	appState = {

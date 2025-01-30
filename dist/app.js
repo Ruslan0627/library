@@ -1122,7 +1122,7 @@
 		</a>
 		<div class = "menu">
 		<div class = menu__links>
-		<a class = "menu__link" href ="#search">
+		<a class = "menu__link" href ="/">
 		<img src ="../../../static/search.svg" alt = "поиск">
 		Поиск книг
 		</a>
@@ -1137,6 +1137,123 @@
 		`;
 			return this.element
 		}
+	}
+
+	class Card extends DivComponent {
+		constructor (appState, cardState) {
+			super();
+			this.appState = appState;
+			this.cardState = cardState;
+
+		}
+
+		#addFavoriteBook() {
+			 this.appState.favorites.push(this.cardState);
+		}
+		#removeFavoriteBook() {
+			this.appState.favorites = this.appState.favorites.filter( b => b.cover_i !== this.cardState.cover_i );
+		}
+		render() {
+			const isFavorite = this.appState.favorites.find(b => b.cover_i === this.cardState.cover_i);
+
+			this.element.innerHTML = "";
+			this.element.classList.add("card");
+			this.element.innerHTML = `
+  <div class="card__img">
+    <img src="https://covers.openlibrary.org/b/id/${this.cardState.cover_i}-M.jpg" />
+  </div>
+  <div class="card__info">
+    <div class="card__genre">
+      ${this.cardState.subject ? this.cardState.subject.slice(0, 2).join("&") : "Жанр не указан"}
+    </div>
+    <div class="card__title">
+      ${this.cardState.title}
+    </div>
+    <div class="card__author">
+      ${this.cardState.author_name ? this.cardState.author_name[0] : "Не задано"}
+    </div>
+    <!-- Переместили сюда footer -->
+    <div class="card__footer">
+      <button class="btn__add ${isFavorite ? "btn__active" : ""}">
+        ${
+					isFavorite 
+					? '<img src="../../../static/favorites.svg"/>' 
+					: '<img src="../../../static/favorites-white.svg"/>'
+				}
+      </button>
+    </div>
+  </div>
+		`;
+			if (isFavorite) {
+				this.element.querySelector("button")
+				.addEventListener( 'click', this.#removeFavoriteBook.bind(this) );
+			}
+			else {
+			this.element.querySelector("button")
+			.addEventListener( 'click', this.#addFavoriteBook.bind(this) );
+			}
+			return this.element;
+		}
+	}
+
+	class CardList extends DivComponent {
+		constructor (appState, parentState) {
+			super();
+			this.appState = appState;
+			this.parentState = parentState;
+		}
+		render() {
+			this.element.innerHTML = "";
+			this.element.classList.add("card-list");
+			if (this.parentState.isLoading) {
+				this.element.innerHTML = `<h1>Загрузка...</h1>`;
+				return this.element;
+			}
+			else {
+				const cardGrid = document.createElement('div');
+				cardGrid.classList.add("card__grid");
+
+				this.element.append(cardGrid);
+
+				for (const book of this.parentState.bookList) {
+					cardGrid.append(new Card(this.appState, book).render());
+				}
+			}
+		
+			return this.element;
+		}
+	}
+
+	class FavoritesPage extends AbstractPage {
+		constructor(appState) {
+			super();
+			this.setTitle("Избранное");
+			this.appState = appState;
+			this.appState = onChange(this.appState, this.appStateHook.bind(this));
+		}
+
+		appStateHook (path) {
+			if (path === "favorites") {
+				this.render();
+		 }
+		 
+		}
+
+		render() {
+			const main = document.createElement("div");
+			main.innerHTML = `<h1>Избранные книги - ${this.appState.favorites.length}</h1>`;
+			const cardList = new CardList(this.appState,{  bookList: this.appState.favorites}).render();
+			main.append(cardList);
+			this.app.innerHTML = "";
+			this.app.append(main);
+			this.renderHeader();
+		}
+		renderHeader() {
+			const header = new Header(this.appState).render();
+			this.app.prepend(header);
+			
+		}
+		 
 	}
 
 	class Search extends DivComponent {
@@ -1182,67 +1299,6 @@
 		}
 	}
 
-	class Card extends DivComponent {
-		constructor (appState, cardState) {
-			super();
-			this.appState = appState;
-			this.cardState = cardState;
-		}
-		render() {
-			const isFavorite = this.appState.favorites.find(b => b.cover_i === this.cardState.cover_i);
-
-			this.element.innerHTML = "";
-			this.element.classList.add("card");
-			this.element.innerHTML = `
-  <div class="card__img">
-    <img src="https://covers.openlibrary.org/b/id/${this.cardState.cover_i}-M.jpg" />
-  </div>
-  <div class="card__info">
-    <div class="card__genre">
-      ${this.cardState.subject ? this.cardState.subject.slice(0, 2).join("&") : "Жанр не указан"}
-    </div>
-    <div class="card__title">
-      ${this.cardState.title}
-    </div>
-    <div class="card__author">
-      ${this.cardState.author_name ? this.cardState.author_name[0] : "Не задано"}
-    </div>
-    <!-- Переместили сюда footer -->
-    <div class="card__footer">
-      <button class="btn__add ${isFavorite ? "btn__active" : ""}">
-        ${isFavorite ? '<img src="../../../static/favorites.svg"/>' : '<img src="../../../static/favorites-white.svg"/>'}
-      </button>
-    </div>
-  </div>
-		`;
-			return this.element;
-		}
-	}
-
-	class CardList extends DivComponent {
-		constructor (appState, parentState) {
-			super();
-			this.appState = appState;
-			this.parentState = parentState;
-		}
-		render() {
-			this.element.innerHTML = "";
-			this.element.classList.add("card-list");
-			if (this.parentState.isLoading) {
-				this.element.innerHTML = `<h1>Загрузка...</h1>`;
-				return this.element;
-			}
-			 else {
-				this.element.innerHTML = `<h1>Найдено книг – ${this.parentState.numFound}</h1>`;
-				for (const book of this.parentState.bookList) {
-					this.element.append(new Card(this.appState, book).render());
-				}
-			}
-		
-			return this.element;
-		}
-	}
-
 	class MainPage extends AbstractPage {
 		constructor(appState) {
 			super();
@@ -1253,73 +1309,64 @@
 		}
 	 
 		state = {
-			bookList: [
-				{
-						"author_name": [
-								"Dennis O'Neill"
-						],
-						"cover_i": 798036,
-						"title": "Tales of the Demon",
-						"subject": [
-								"Comics & graphic novels, general",
-								"Batman (fictitious character), fiction",
-								"Comic books, strips, etc.",
-								"Comic books, strips",
-								"DC Comics",
-								"Juvenile Fiction / Comics & Graphic Novels / Superheroes"
-						]
-				}
-		],
-			numFound:0,
+			bookList: [],
+			numFound: 0,
 			isLoading: false,
 			searchValue: "",
 			offSet: 10,
 		};
 
-		appStateHook (path) {
+		appStateHook(path) {
 			if (path === "favorites") {
 				this.render();
-		 }
-		 
+			}
 		}
-		async stateHook (path) {
+
+		async stateHook(path) {
 			if (path === "searchValue") {
 				this.state.isLoading = true;
 				this.render();
+
 				const data = await this.getBookList(this.state.searchValue, this.state.offSet);
 				this.state.isLoading = false;
 				this.state.numFound = data.numFound;
-				this.state.bookList = data.docs;		
-				console.log(data.docs);		
-		 }
-		 if (path === "bookList") {
-			this.render();
-		 }
+				this.state.bookList = data.docs;
+			}
+			if (path === "bookList") {
+				this.render();
+			}
 		}
 
-		async getBookList (searchValue,offset) {
+		async getBookList(searchValue, offset) {
 			const getData = await fetch(`https://openlibrary.org/search.json?q=${searchValue}&fields=title,author_name,cover_i,subject&offset=${offset}`);
-			return getData.json()
+			return getData.json();
 		}
 
 		render() {
-			console.log(this.state.numFound);
-			
 			const main = document.createElement("div");
 			const searchComponent = new Search(this.state).render();
-			const cardList = new CardList(this.appState,this.state).render();
+			const cardList = new CardList(this.appState, this.state).render();
+			const foundBooksComponent = document.createElement("h1");
+			foundBooksComponent.innerHTML = `Найдено книг – ${this.state.numFound}`;
+
+			if (this.state.isLoading) {
+				foundBooksComponent.style.display = "none";
+			} else {
+				foundBooksComponent.style.display = "block";
+			}
+
 			main.append(searchComponent);
+			main.append(foundBooksComponent); 
 			main.append(cardList);
-			this.app.innerHTML = "";
+			this.app.innerHTML = ""; 
 			this.app.append(main);
 			this.renderHeader();
 		}
+
 		renderHeader() {
 			const header = new Header(this.appState).render();
 			this.app.prepend(header);
-			
 		}
-		 
 	}
 
 	class NotFoundPage extends AbstractPage {
@@ -1337,6 +1384,10 @@
 			{
 				path: "",
 				page: MainPage,
+			},		
+			{
+				path: "#favorites",
+				page: FavoritesPage,
 			},
 		];
 		appState = {
