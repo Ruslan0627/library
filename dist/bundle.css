@@ -3,6 +3,11 @@
 	align-items: center;
 	justify-content: space-between;
 	margin-bottom: 41px;
+	position: sticky;
+  top: 0;
+  background: white;
+  padding: 10px;
+  z-index: 1000;
 }
 
 .menu {
@@ -43,60 +48,20 @@
 	font-size: 12px;
 	line-height: 32px;
 }
-.search {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 10px;
-	margin-bottom: 30px;
+.card__grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 12px;
+	align-items: stretch;
+	align-items: start;
 }
-
-.search__wrapper {
-	width: 100px;
-	flex: 1;
-	position: relative;
-}
-
-.search__wrapper img {
-	position: absolute;
-	left: 10px;
-	top: 13px;
-
-}
-
-.search__input {
-	width: 100%;
-	padding: 15px 0 15px 60px;
-	border-radius: 4px;
-	background: var(--gray-color);
-	border: none;
-}
-
-.search__input::placeholder {
-	font-size: 14px;
-	font-weight: 400;
-	line-height: 32px;
-	color: var(--black-color);
-}
-
-.search__button {
-	background-color: var(--black-color);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border-radius: 5px;
-	border: none;
-	padding: 6px;
-	cursor: pointer;
-	
-}
-
 .card {
 	display: flex;
 	flex-direction: column;
 	border-radius: 8px;
-	width: 220px;
 	overflow: hidden;
+	width: 220px;
+	height: 100%;
 }
 
 .card__img {
@@ -119,6 +84,7 @@
 	background-color: var(--black-color);
 	color: var(--white-white);
 	padding: 10px;
+	flex-grow: 1;
 }
 
 .card__genre {
@@ -168,4 +134,51 @@
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
+}
+.search {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	margin-bottom: 30px;
+}
+
+.search__wrapper {
+	width: 100px;
+	flex: 1;
+	position: relative;
+}
+
+.search__wrapper img {
+	position: absolute;
+	left: 10px;
+	top: 13px;
+
+}
+
+.search__input {
+	width: 100%;
+	padding: 15px 0 15px 60px;
+	border-radius: 4px;
+	background: var(--gray-color);
+	border: none;
+}
+
+.search__input::placeholder {
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 32px;
+	color: var(--black-color);
+}
+
+.search__button {
+	background-color: var(--black-color);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 5px;
+	border: none;
+	padding: 6px;
+	cursor: pointer;
+	
 }
