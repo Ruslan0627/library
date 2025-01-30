@@ -7,12 +7,4 @@ export class AbstractPage {
 	setTitle (title) {
 		return document.title = title
 	}
-
-	render () {
-		return
-	}
-
-	unmount() {
-		return
-	}
 }

@@ -1,0 +1,78 @@
+.card {
+	display: flex;
+	flex-direction: column;
+	border-radius: 8px;
+	width: 220px;
+	overflow: hidden;
+}
+
+.card__img {
+	background-color: var(--gray-color);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 180px;
+	padding: 45px 45px 0 45px;
+}
+
+.card__img img {
+	max-width: 130px;
+
+}
+
+.card__info {
+	display: flex;
+	flex-direction: column;
+	background-color: var(--black-color);
+	color: var(--white-white);
+	padding: 10px;
+}
+
+.card__genre {
+	color: var(--gray-color);
+	font-size: 10.85px;
+  font-weight: 300;
+  line-height: 15px;
+	margin-bottom: 5px;
+}
+
+.card__title {
+	font-size: 10.85px;
+  font-weight: 600;
+  line-height: 15px;
+	margin-bottom: 10px;
+}
+
+.card__author {
+	font-size: 10.99px;
+  font-weight: 400;
+  line-height: 15px;
+	margin-bottom: 30px;
+}
+
+.card__footer {
+	background-color: var(--black-color);
+}
+
+.btn__add {
+	border: 1px solid var(--white-white);
+	background-color: transparent;
+	width: 36px;
+	height: 32px;
+	border-radius: 6px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+.btn__active {
+	background-color: var(--white-white);
+	width: 36px;
+	height: 32px;
+	border-radius: 6px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}

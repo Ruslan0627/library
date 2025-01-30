@@ -1,5 +1,6 @@
 import "../search/search.css";
-import { DivComponent } from "../../../common/classes/div-component.js";
+import { DivComponent } from "../../common/classes/div-component";
+
 
 export class Search extends DivComponent {
 	constructor(state) {
@@ -37,7 +38,7 @@ export class Search extends DivComponent {
 		</button>
 		`
 		this.element.querySelector("button").addEventListener('click', this.onSearch.bind(this))
-		this.element.querySelector("button").addEventListener('keydown', (event) => {
+		this.element.querySelector("input").addEventListener('keydown', (event) => {
 			if (event.code === "Enter") this.onSearch()
 		})
 		return this.element

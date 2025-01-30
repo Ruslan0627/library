@@ -10,14 +10,6 @@
 		setTitle (title) {
 			return document.title = title
 		}
-
-		render () {
-			return
-		}
-
-		unmount() {
-			return
-		}
 	}
 
 	const PATH_SEPARATOR = '.';
@@ -1183,10 +1175,71 @@
 		</button>
 		`;
 			this.element.querySelector("button").addEventListener('click', this.onSearch.bind(this));
-			this.element.querySelector("button").addEventListener('keydown', (event) => {
+			this.element.querySelector("input").addEventListener('keydown', (event) => {
 				if (event.code === "Enter") this.onSearch();
 			});
 			return this.element
+		}
+	}
+
+	class Card extends DivComponent {
+		constructor (appState, cardState) {
+			super();
+			this.appState = appState;
+			this.cardState = cardState;
+		}
+		render() {
+			const isFavorite = this.appState.favorites.find(b => b.cover_i === this.cardState.cover_i);
+
+			this.element.innerHTML = "";
+			this.element.classList.add("card");
+			this.element.innerHTML = `
+  <div class="card__img">
+    <img src="https://covers.openlibrary.org/b/id/${this.cardState.cover_i}-M.jpg" />
+  </div>
+  <div class="card__info">
+    <div class="card__genre">
+      ${this.cardState.subject ? this.cardState.subject.slice(0, 2).join("&") : "Жанр не указан"}
+    </div>
+    <div class="card__title">
+      ${this.cardState.title}
+    </div>
+    <div class="card__author">
+      ${this.cardState.author_name ? this.cardState.author_name[0] : "Не задано"}
+    </div>
+    <!-- Переместили сюда footer -->
+    <div class="card__footer">
+      <button class="btn__add ${isFavorite ? "btn__active" : ""}">
+        ${isFavorite ? '<img src="../../../static/favorites.svg"/>' : '<img src="../../../static/favorites-white.svg"/>'}
+      </button>
+    </div>
+  </div>
+		`;
+			return this.element;
+		}
+	}
+
+	class CardList extends DivComponent {
+		constructor (appState, parentState) {
+			super();
+			this.appState = appState;
+			this.parentState = parentState;
+		}
+		render() {
+			this.element.innerHTML = "";
+			this.element.classList.add("card-list");
+			if (this.parentState.isLoading) {
+				this.element.innerHTML = `<h1>Загрузка...</h1>`;
+				return this.element;
+			}
+			 else {
+				this.element.innerHTML = `<h1>Найдено книг – ${this.parentState.numFound}</h1>`;
+				for (const book of this.parentState.bookList) {
+					this.element.append(new Card(this.appState, book).render());
+				}
+			}
+		
+			return this.element;
 		}
 	}
 
@@ -1200,34 +1253,63 @@
 		}
 	 
 		state = {
-			bookList: [],
+			bookList: [
+				{
+						"author_name": [
+								"Dennis O'Neill"
+						],
+						"cover_i": 798036,
+						"title": "Tales of the Demon",
+						"subject": [
+								"Comics & graphic novels, general",
+								"Batman (fictitious character), fiction",
+								"Comic books, strips, etc.",
+								"Comic books, strips",
+								"DC Comics",
+								"Juvenile Fiction / Comics & Graphic Novels / Superheroes"
+						]
+				}
+		],
+			numFound:0,
 			isLoading: false,
 			searchValue: "",
-			offSet:null,
+			offSet: 10,
 		};
 
 		appStateHook (path) {
 			if (path === "favorites") {
 				this.render();
 		 }
+		 
 		}
 		async stateHook (path) {
 			if (path === "searchValue") {
+				this.state.isLoading = true;
+				this.render();
 				const data = await this.getBookList(this.state.searchValue, this.state.offSet);
-				this.state.bookList = data.docs;
-				console.log(data.docs);
+				this.state.isLoading = false;
+				this.state.numFound = data.numFound;
+				this.state.bookList = data.docs;		
+				console.log(data.docs);		
+		 }
+		 if (path === "bookList") {
+			this.render();
 		 }
 		}
 
 		async getBookList (searchValue,offset) {
-			const getData = await fetch (`https://openlibrary.org/search.json?q=${searchValue}&offset=${offset}`);
+			const getData = await fetch(`https://openlibrary.org/search.json?q=${searchValue}&fields=title,author_name,cover_i,subject&offset=${offset}`);
 			return getData.json()
 		}
 
 		render() {
+			console.log(this.state.numFound);
+			
 			const main = document.createElement("div");
 			const searchComponent = new Search(this.state).render();
+			const cardList = new CardList(this.appState,this.state).render();
 			main.append(searchComponent);
+			main.append(cardList);
 			this.app.innerHTML = "";
 			this.app.append(main);
 			this.renderHeader();
