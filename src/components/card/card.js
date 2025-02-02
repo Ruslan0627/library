@@ -15,15 +15,19 @@ export class Card extends DivComponent {
 	#removeFavoriteBook() {
 		this.appState.favorites = this.appState.favorites.filter( b => b.cover_i !== this.cardState.cover_i )
 	}
+
+	#setSearchBookId() {
+		this.appState.searchBookId = this.cardState.edition_key[0]
+	}
 	render() {
 		const isFavorite = this.appState.favorites.find(b => b.cover_i === this.cardState.cover_i)
 
 		this.element.innerHTML = ""
 		this.element.classList.add("card")
 		this.element.innerHTML = `
-  <div class="card__img">
+  <a href = "#about-book" class="card__img">
     <img src="https://covers.openlibrary.org/b/id/${this.cardState.cover_i}-M.jpg" />
-  </div>
+  </a>
   <div class="card__info">
     <div class="card__genre">
       ${this.cardState.subject ? this.cardState.subject.slice(0, 2).join("&") : "Жанр не указан"}
@@ -54,6 +58,8 @@ export class Card extends DivComponent {
 		this.element.querySelector("button")
 		.addEventListener( 'click', this.#addFavoriteBook.bind(this) )
 		}
+		this.element.querySelector("a")
+		.addEventListener( 'click',this.#setSearchBookId.bind(this) )
 		return this.element;
 	}
 }
