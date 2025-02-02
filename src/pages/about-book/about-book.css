@@ -1,0 +1,49 @@
+.about-book__body {
+	display: flex;
+
+	gap: 20px;
+	
+}
+.about-book__info {
+	display: flex;
+	flex-direction: column;
+	gap: 7px;
+}
+
+.about-book__title h1{
+	font-size: 24px;
+font-weight: 600;
+line-height: 32px;
+}
+
+.about-book__parametr {
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 160%;
+}
+
+.about-book__value {
+	font-size: 14px;
+font-weight: 700;
+line-height: 160%;
+}
+
+.about-book__pages span {
+	font-size: 14px;
+ font-weight: 600;
+ line-height: 32px;
+}
+
+.about-book__btn {
+	margin-top: 15px;
+	background-color: var(--black-color);
+	color: var(--white-white);
+	padding: 7px 8px 7px 8px;
+	font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+	border-radius: 4px;
+	border: none;
+	width: 161px;
+	letter-spacing: 0.1px;
+}

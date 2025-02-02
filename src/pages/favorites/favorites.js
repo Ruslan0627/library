@@ -12,10 +12,8 @@ export class FavoritesPage extends AbstractPage {
 	}
 
 	appStateHook (path) {
-		if (path === "favorites") {
+		if (path === "favorites")
 			this.render()
-	 }
-	 
 	}
 
 	render() {

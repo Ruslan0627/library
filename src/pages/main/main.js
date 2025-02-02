@@ -22,7 +22,7 @@ export class MainPage extends AbstractPage {
 	};
 
 	appStateHook(path) {
-		if (path === "favorites") {
+		if (path === "favorites" || path === "searchBookId") {
 			this.render()
 		}
 	}
@@ -35,7 +35,9 @@ export class MainPage extends AbstractPage {
 			const data = await this.getBookList(this.state.searchValue, this.state.offSet);
 			this.state.isLoading = false;
 			this.state.numFound = data.numFound;
+			console.log(data.docs);
 			this.state.bookList = data.docs;
+			
 		}
 		if (path === "bookList") {
 			this.render();
@@ -43,7 +45,7 @@ export class MainPage extends AbstractPage {
 	}
 
 	async getBookList(searchValue, offset) {
-		const getData = await fetch(`https://openlibrary.org/search.json?q=${searchValue}&fields=title,author_name,cover_i,subject&offset=${offset}`);
+		const getData = await fetch(`https://openlibrary.org/search.json?q=${searchValue}&fields=title,author_name,cover_i,subject,key,edition_key&offset=${offset}`)
 		return getData.json();
 	}
 
